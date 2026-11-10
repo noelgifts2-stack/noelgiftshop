@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #C62828;
+  --secondary: #14532D;
+  --accent-gold: #F4C542;
+  --bg-cream: #FFFDF8;
+  --text-dark: #242424;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #FFF8EE;
+}
+::-webkit-scrollbar-thumb {
+  background: #E2B970;
+  border-radius: 9999px;
+  border: 2px solid #FFF8EE;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C62828;
+}
+
+/* Shimmer Gold Effect */
+.gold-shimmer {
+  background: linear-gradient(135deg, #F4C542 0%, #FFF3B0 50%, #D4A017 100%);
+  background-size: 200% 200%;
+  animation: goldShimmer 4s ease infinite;
+}
+
+@keyframes goldShimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Gradient Text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4A017 0%, #F4C542 50%, #B8860B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Pulse animation for CTA */
+@keyframes festivePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 197, 66, 0.6);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(244, 197, 66, 0);
+  }
+}
+.pulse-festive {
+  animation: festivePulse 2.5s infinite;
+}

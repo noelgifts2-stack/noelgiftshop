@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NOËL GIFT SHOP | Boutique de Cadeaux Magiques de Noël</title>
+  <meta name="description" content="Découvrez NOËL GIFT SHOP : la boutique officielle de cadeaux de Noël et fêtes de fin d'année. Mode, high-tech, jouets, montres, parfums et coffrets livrés rapidement avec paiement sécurisé." />
+  
+  <!-- Favicon SVG Cadeau -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            festiveRed: {
+              DEFAULT: '#C62828',
+              hover: '#A71D1D',
+              light: '#FFEBEE'
+            },
+            sapinGreen: {
+              DEFAULT: '#14532D',
+              hover: '#0E3E21',
+              light: '#F0FDF4'
+            },
+            accentGold: {
+              DEFAULT: '#F4C542',
+              hover: '#E5B535',
+              dark: '#D4A017'
+            },
+            creamBg: '#FFFDF8',
+            charcoalDark: '#242424'
+          },
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#FFFDF8] text-[#242424] antialiased min-h-screen flex flex-col pb-16 md:pb-0">
+
+  <!-- CANVAS FLOCONS DE NEIGE FESTIFS -->
+  <canvas id="snow-canvas"></canvas>
+
+  <!-- 1. TOP TICKER / BANDEAU D'ANNONCE SUPÉRIEUR -->
+  <div class="bg-gradient-to-r from-[#C62828] via-[#A71D1D] to-[#C62828] text-white text-xs font-semibold py-2 px-4 shadow-sm border-b border-[#F4C542]/40 relative z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2 overflow-hidden whitespace-nowrap">
+        <span class="text-[#F4C542] animate-pulse">✨</span>
+        <span class="text-xs sm:text-sm">
+          <strong>Spécial Noël 2026 :</strong> Livraison offerte dès 50 000 FCFA | -15% avec le code <strong class="bg-[#F4C542] text-[#242424] px-1.5 py-0.5 rounded text-[11px] font-mono">NOEL2026</strong>
+        </span>
+      </div>
+
+      <div class="hidden md:flex items-center gap-4 text-[11px] text-[#FFFDF8]/90">
+        <a href="https://wa.me/22997001122" target="_blank" class="hover:text-[#F4C542] flex items-center gap-1">
+          <span>💬 WhatsApp :</span> <strong>+229 97 00 11 22</strong>
+        </a>
+        <span class="text-white/40">|</span>
+        <!-- Bouton bascule Neige -->
+        <button onclick="Store.toggleSnow()" class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/25 hover:bg-black/40 text-[10px] text-white">
+          <span>❄️</span>
+          <span>Neige</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HEADER PRINCIPAL -->
+  <header class="sticky top-0 z-40 bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F1ECE1] shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+        
+        <!-- Bouton Menu Mobile (Hamburger) -->
+        <button onclick="App.toggleMobileMenu()" class="lg:hidden p-2 rounded-xl text-gray-700 hover:text-[#C62828] hover:bg-red-50 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <!-- LOGO NOËL GIFT SHOP -->
+        <a href="#home" class="flex items-center gap-2.5 flex-shrink-0 group">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#C62828] to-[#991B1B] text-[#F4C542] flex items-center justify-center text-2xl shadow-md border border-[#F4C542]/40 group-hover:scale-105 transition-transform">
+            🎁
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-lg sm:text-xl font-heading tracking-tight text-[#C62828]">NOËL</span>
+              <span class="font-bold text-lg sm:text-xl font-heading text-[#14532D]">GIFT SHOP</span>
+            </div>
+            <p class="text-[10px] text-[#D4A017] font-bold tracking-widest uppercase -mt-1">Magie & Cadeaux</p>
+          </div>
+        </a>
+
+        <!-- BARRE DE RECHERCHE AVEC SUGGESTIONS EN DIRECT -->
+        <div class="hidden sm:block flex-1 max-w-md mx-4 relative" id="search-box-container">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="global-search-input"
+              oninput="App.handleSearchInput(this.value)"
+              onkeydown="if(event.key === 'Enter') App.submitSearch(this.value)"
+              placeholder="Quel cadeau recherchez-vous ? (ex: montre, robe, trottinette...)" 
+              class="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm rounded-full bg-white border border-[#F1ECE1] focus:border-[#C62828] focus:ring-2 focus:ring-[#C62828]/20 focus:outline-none shadow-sm transition-all"
+            />
+            <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <button onclick="App.submitSearch(document.getElementById('global-search-input').value)" class="absolute right-2 top-2 p-1 rounded-full bg-[#C62828] text-white hover:bg-[#A71D1D]">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+
+          <!-- Dropdown Résultats Autocomplete -->
+          <div id="search-results-dropdown" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-[#F1ECE1] z-50 overflow-hidden">
+            <!-- Rendu dynamique via App.handleSearchInput() -->
+          </div>
+        </div>
+
+        <!-- NAVIGATION DESKTOP -->
+        <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-[#242424]">
+          <a href="#home" data-nav-route="home" class="hover:text-[#C62828] transition-colors py-2">Accueil</a>
+          <a href="#shop" data-nav-route="shop" class="hover:text-[#C62828] transition-colors py-2">Boutique</a>
+          
+          <!-- Dropdown Catégories -->
+          <div class="relative group">
+            <button class="hover:text-[#C62828] transition-colors py-2 flex items-center gap-1">
+              <span>Catégories</span>
+              <svg class="w-4 h-4 text-gray-400 group-hover:text-[#C62828] transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-0 w-72 bg-white rounded-2xl shadow-xl border border-[#F1ECE1] p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+              <div class="text-[10px] font-bold uppercase text-gray-400 px-3 py-1">Nos 10 Rayons de Noël</div>
+              <div class="grid grid-cols-1 gap-0.5 mt-1">
+                <a href="#category/mode" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">👗 Mode & vêtements</a>
+                <a href="#category/chaussures" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">👠 Chaussures & Sneakers</a>
+                <a href="#category/jouets" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">🧸 Jouets & enfants</a>
+                <a href="#category/mobilite" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">🛹 Trottinettes & skates</a>
+                <a href="#category/hightech" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">🎧 High-tech & gadgets</a>
+                <a href="#category/accessoires" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">⌚ Montres & accessoires</a>
+                <a href="#category/beaute" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">✨ Beauté & parfums</a>
+                <a href="#category/maison" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">🏡 Maison & décoration</a>
+                <a href="#category/sport" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">⚽ Sport & loisirs</a>
+                <a href="#category/coffrets" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs hover:bg-[#FFF9F0] hover:text-[#C62828] transition-colors">🎁 Coffrets cadeaux</a>
+              </div>
+            </div>
+          </div>
+
+          <a href="#promotions" data-nav-route="promotions" class="hover:text-[#C62828] transition-colors py-2 flex items-center gap-1.5 text-[#C62828]">
+            <span>Promotions</span>
+            <span class="px-1.5 py-0.5 rounded-full bg-[#C62828] text-white text-[10px] font-bold animate-pulse">PROMO</span>
+          </a>
+          <a href="#contact" data-nav-route="contact" class="hover:text-[#C62828] transition-colors py-2">Contact</a>
+        </nav>
+
+        <!-- ACTIONS HEADER : Compte, Favoris, Panier -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Compte Utilisateur -->
+          <button onclick="document.getElementById('user-modal').classList.remove('hidden')" class="p-2.5 rounded-xl text-gray-700 hover:text-[#C62828] hover:bg-gray-100 transition-colors" title="Mon Compte">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          </button>
+
+          <!-- Favoris -->
+          <a href="#wishlist" class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#C62828] hover:bg-gray-100 transition-colors" title="Favoris">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            <span class="wishlist-count-badge absolute top-1 right-1 w-4 h-4 rounded-full bg-[#14532D] text-white text-[10px] font-bold items-center justify-center hidden">0</span>
+          </a>
+
+          <!-- Panier avec Tiroir -->
+          <button onclick="App.openCartDrawer()" class="relative flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#C62828] text-white hover:bg-[#A71D1D] shadow-md transition-all hover-lift" title="Mon Panier">
+            <svg class="w-5 h-5 text-[#F4C542]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span class="hidden sm:inline text-xs font-bold">Panier</span>
+            <span class="cart-count-badge w-5 h-5 rounded-full bg-[#F4C542] text-[#242424] text-[10px] font-black flex items-center justify-center">0</span>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. CONTENU PRINCIPAL DYNAMIQUE (SPA ROUTER) -->
+  <main id="main-content" class="flex-1">
+    <!-- Rendu via js/app.js selon l'URL (#home, #shop, #product/id, #cart, #checkout, #contact) -->
+  </main>
+
+  <!-- 4. FOOTER COMPLET DE LA BOUTIQUE -->
+  <footer class="bg-[#14532D] text-white pt-14 pb-8 border-t-4 border-[#F4C542]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Newsletter Spéciale Noël -->
+      <div class="bg-gradient-to-r from-[#C62828] to-[#991B1B] rounded-3xl p-8 sm:p-10 mb-12 shadow-xl border border-[#F4C542]/40 relative overflow-hidden">
+        <div class="max-w-2xl relative z-10">
+          <span class="px-3 py-1 rounded-full bg-[#F4C542] text-[#242424] text-xs font-bold uppercase mb-2 inline-block">Lettre au Père Noël</span>
+          <h3 class="text-2xl sm:text-3xl font-extrabold font-heading text-white">Recevez nos offres secrètes & -15% sur votre premier achat</h3>
+          <p class="text-xs sm:text-sm text-gray-200 mt-2 font-light">Inscrivez-vous pour recevoir nos réductions exclusives avant tout le monde.</p>
+          
+          <form onsubmit="event.preventDefault(); Store.showToast('🎄 Félicitations ! Votre code -15% (NOEL2026) a été activé !');" class="mt-4 flex flex-col sm:flex-row gap-2 max-w-md">
+            <input type="email" required placeholder="Votre adresse e-mail..." class="flex-1 px-4 py-3 rounded-xl text-xs sm:text-sm text-[#242424] focus:outline-none"/>
+            <button type="submit" class="px-6 py-3 rounded-xl bg-[#F4C542] text-[#242424] font-bold text-xs sm:text-sm hover:bg-[#E5B535] shadow transition-colors">
+              M'inscrire 🎁
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-white/15">
+        
+        <!-- Colonne 1 : Présentation -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-xl bg-[#C62828] text-[#F4C542] flex items-center justify-center text-xl shadow">🎁</div>
+            <span class="font-bold text-xl font-heading text-white">NOËL GIFT SHOP</span>
+          </div>
+          <p class="text-xs text-gray-300 leading-relaxed max-w-sm">
+            Votre destination enchantée pour dénicher les plus beaux cadeaux de Noël, anniversaires et moments inoubliables. Emballage soigné, livraison express et service client chaleureux.
+          </p>
+          <div class="pt-2">
+            <a href="https://wa.me/22997001122" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#25D366] text-white text-xs font-bold hover:bg-[#1EBE5D] shadow">
+              <span>💬 Commander directement par WhatsApp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Colonne 2 : Liens rapides -->
+        <div>
+          <h4 class="font-bold text-sm text-[#F4C542] font-heading mb-4">Liens Rapides</h4>
+          <ul class="space-y-2 text-xs text-gray-300">
+            <li><a href="#home" class="hover:text-[#F4C542] transition-colors">Accueil</a></li>
+            <li><a href="#shop" class="hover:text-[#F4C542] transition-colors">Tous les Cadeaux</a></li>
+            <li><a href="#promotions" class="hover:text-[#F4C542] transition-colors">Promotions & Ventes Flash</a></li>
+            <li><a href="#cart" class="hover:text-[#F4C542] transition-colors">Mon Panier</a></li>
+            <li><a href="#contact" class="hover:text-[#F4C542] transition-colors">Contact & Service Client</a></li>
+          </ul>
+        </div>
+
+        <!-- Colonne 3 : Top Catégories -->
+        <div>
+          <h4 class="font-bold text-sm text-[#F4C542] font-heading mb-4">Catégories</h4>
+          <ul class="space-y-2 text-xs text-gray-300">
+            <li><a href="#category/coffrets" class="hover:text-[#F4C542] transition-colors">Coffrets Cadeaux</a></li>
+            <li><a href="#category/accessoires" class="hover:text-[#F4C542] transition-colors">Montres & Bijoux</a></li>
+            <li><a href="#category/hightech" class="hover:text-[#F4C542] transition-colors">High-Tech & Gadgets</a></li>
+            <li><a href="#category/jouets" class="hover:text-[#F4C542] transition-colors">Jouets & Enfants</a></li>
+            <li><a href="#category/mode" class="hover:text-[#F4C542] transition-colors">Mode & Vêtements</a></li>
+          </ul>
+        </div>
+
+        <!-- Colonne 4 : Paiement & Sécurité -->
+        <div>
+          <h4 class="font-bold text-sm text-[#F4C542] font-heading mb-4">Moyens de Paiement</h4>
+          <p class="text-xs text-gray-300 mb-3">Transactions 100% sécurisées à la commande ou à la réception :</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-2 py-1 rounded bg-yellow-400 text-black font-black text-[10px]">MTN MoMo</span>
+            <span class="px-2 py-1 rounded bg-blue-600 text-white font-bold text-[10px]">Moov Flooz</span>
+            <span class="px-2 py-1 rounded bg-emerald-600 text-white font-bold text-[10px]">Cash à la livraison</span>
+            <span class="px-2 py-1 rounded bg-gray-800 text-white font-bold text-[10px]">Visa / Mastercard</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bas de page & Copyright -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+        <p>© 2026 NOËL GIFT SHOP. Tous droits réservés. Conçu pour illuminer vos fêtes de fin d'année.</p>
+        <div class="flex gap-4">
+          <a href="#contact" class="hover:text-white">Conditions Générales</a>
+          <span>•</span>
+          <a href="#contact" class="hover:text-white">Politique de Confidentialité</a>
+          <span>•</span>
+          <a href="#contact" class="hover:text-white">Mentions Légales</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- 5. TIROIR PANIER SLIDE-OVER (MINI CART MODAL) -->
+  <div id="cart-backdrop" onclick="App.closeCartDrawer()" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    
+    <!-- En-tête Tiroir -->
+    <div class="p-5 bg-[#14532D] text-white flex items-center justify-between border-b-2 border-[#F4C542]">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🎁</span>
+        <h3 class="font-bold text-base font-heading">Votre Panier de Noël</h3>
+      </div>
+      <button onclick="App.closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-lg">×</button>
+    </div>
+
+    <!-- Articles du Tiroir -->
+    <div id="cart-drawer-items" class="flex-1 overflow-y-auto p-5 space-y-3">
+      <!-- Rendu dynamique via App.updateCartDrawer() -->
+    </div>
+
+    <!-- Pied du Tiroir Panier -->
+    <div class="p-5 border-t border-gray-100 bg-[#FFFDF8] space-y-3">
+      <div class="flex justify-between text-xs text-gray-600">
+        <span>Sous-total :</span>
+        <span id="drawer-subtotal" class="font-bold text-[#242424]">0 FCFA</span>
+      </div>
+      <div class="flex justify-between items-baseline pt-1">
+        <span class="font-bold text-sm text-[#242424]">Total :</span>
+        <span id="drawer-total" class="font-black text-xl text-[#C62828] font-heading">0 FCFA</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <a href="#cart" onclick="App.closeCartDrawer()" class="py-3 rounded-xl border border-gray-300 font-bold text-xs text-[#242424] hover:bg-gray-50 text-center block">
+          Voir le panier
+        </a>
+        <a href="#checkout" onclick="App.closeCartDrawer()" class="py-3 rounded-xl bg-[#C62828] text-white font-bold text-xs hover:bg-[#A71D1D] shadow text-center block">
+          Commander →
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 6. MENU DRAWER MOBILE -->
+  <div id="mobile-menu-backdrop" onclick="App.closeMobileMenu()" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50"></div>
+  <aside id="mobile-menu-drawer" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-[#FFFDF8] shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-5 bg-[#C62828] text-white flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🎅</span>
+        <span class="font-bold text-base font-heading">Menu de Noël</span>
+      </div>
+      <button onclick="App.closeMobileMenu()" class="text-2xl font-bold">×</button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4 space-y-4 text-sm font-semibold text-[#242424]">
+      <a href="#home" class="block p-2 rounded-xl hover:bg-red-50 hover:text-[#C62828]">🏠 Accueil</a>
+      <a href="#shop" class="block p-2 rounded-xl hover:bg-red-50 hover:text-[#C62828]">🛍️ Boutique Complète</a>
+      <a href="#promotions" class="block p-2 rounded-xl hover:bg-red-50 text-[#C62828] font-bold">⚡ Ventes Flash de Noël</a>
+      <a href="#wishlist" class="block p-2 rounded-xl hover:bg-red-50 hover:text-[#C62828]">💖 Mes Favoris</a>
+      <a href="#contact" class="block p-2 rounded-xl hover:bg-red-50 hover:text-[#C62828]">📞 Contact & Aide</a>
+
+      <div class="pt-4 border-t border-gray-200">
+        <span class="text-[11px] font-bold uppercase text-gray-400 block mb-2 px-2">Catégories :</span>
+        <div class="space-y-1">
+          <a href="#category/mode" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">👗 Mode & vêtements</a>
+          <a href="#category/chaussures" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">👠 Chaussures</a>
+          <a href="#category/jouets" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">🧸 Jouets & enfants</a>
+          <a href="#category/mobilite" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">🛹 Trottinettes & skates</a>
+          <a href="#category/hightech" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">🎧 High-tech & gadgets</a>
+          <a href="#category/accessoires" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">⌚ Montres & accessoires</a>
+          <a href="#category/beaute" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">✨ Beauté & parfums</a>
+          <a href="#category/maison" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">🏡 Maison & décoration</a>
+          <a href="#category/sport" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">⚽ Sport & loisirs</a>
+          <a href="#category/coffrets" onclick="App.closeMobileMenu()" class="block px-2 py-1.5 rounded-lg text-xs hover:bg-gray-100 text-gray-700">🎁 Coffrets cadeaux</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 border-t border-gray-200 bg-white">
+      <a href="https://wa.me/22997001122" target="_blank" class="w-full py-2.5 rounded-xl bg-[#25D366] text-white text-xs font-bold flex items-center justify-center gap-2">
+        <span>💬 WhatsApp Direct</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- 7. BARRE DE NAVIGATION INFÉRIEURE MOBILE (POUR SHOPPING NOMADE) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-[#F1ECE1] py-2 px-4 flex justify-around items-center z-40 shadow-lg">
+    <a href="#home" class="flex flex-col items-center text-gray-600 hover:text-[#C62828]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      <span class="text-[10px] mt-0.5">Accueil</span>
+    </a>
+    <a href="#shop" class="flex flex-col items-center text-gray-600 hover:text-[#C62828]">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      <span class="text-[10px] mt-0.5">Boutique</span>
+    </a>
+    <a href="#wishlist" class="flex flex-col items-center text-gray-600 hover:text-[#C62828] relative">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+      <span class="wishlist-count-badge absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#14532D] text-white text-[9px] font-bold flex items-center justify-center hidden">0</span>
+      <span class="text-[10px] mt-0.5">Favoris</span>
+    </a>
+    <a href="#cart" class="flex flex-col items-center text-[#C62828] relative">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+      <span class="cart-count-badge absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#F4C542] text-[#242424] text-[9px] font-black flex items-center justify-center">0</span>
+      <span class="text-[10px] mt-0.5 font-bold">Panier</span>
+    </a>
+  </nav>
+
+  <!-- 8. MODAL COMPTE CLIENT (SIMULATION CONNEXION / INSCRIPTION) -->
+  <div id="user-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-2 border-[#F4C542] relative animate-in fade-in">
+      <button onclick="document.getElementById('user-modal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-black font-bold text-lg">×</button>
+      <div class="text-center mb-5">
+        <div class="w-12 h-12 rounded-full bg-red-100 text-[#C62828] flex items-center justify-center text-2xl mx-auto mb-2">👤</div>
+        <h3 class="text-lg font-bold text-[#242424] font-heading">Espace Client Noël</h3>
+        <p class="text-xs text-gray-500">Connectez-vous pour suivre vos commandes et cadeaux</p>
+      </div>
+      <form onsubmit="event.preventDefault(); Store.showToast('Bienvenue dans votre espace féérique ! ✨'); document.getElementById('user-modal').classList.add('hidden');" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">E-mail ou Téléphone</label>
+          <input type="text" required placeholder="Ex: client@noelgiftshop.com" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#C62828]"/>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Mot de passe</label>
+          <input type="password" required placeholder="••••••••" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-[#C62828]"/>
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-[#C62828] text-white font-bold text-xs hover:bg-[#A71D1D] shadow mt-2">
+          Se connecter
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPTS APPLICATION -->
+  <script src="js/products-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

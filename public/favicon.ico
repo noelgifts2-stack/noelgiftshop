@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C62828"/>
+      <stop offset="100%" stop-color="#8B0000"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="50%" stop-color="#F4C542"/>
+      <stop offset="100%" stop-color="#D4A017"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Fond arrondi festif rouge bordeaux -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#boxGrad)" filter="url(#shadow)"/>
+  
+  <!-- Bordure dorée subtile -->
+  <rect x="2.5" y="2.5" width="59" height="59" rx="15.5" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-opacity="0.6"/>
+
+  <!-- Boîte cadeau - Corps -->
+  <rect x="14" y="28" width="36" height="24" rx="4" fill="url(#boxGrad)" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+  <!-- Couvercle cadeau -->
+  <rect x="11" y="22" width="42" height="8" rx="3" fill="#D32F2F" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+  <!-- Ruban vertical doré -->
+  <rect x="28" y="22" width="8" height="30" fill="url(#goldGrad)"/>
+
+  <!-- Ruban horizontal doré -->
+  <rect x="14" y="37" width="36" height="6" fill="url(#goldGrad)"/>
+
+  <!-- Nœud papillon doré supérieur -->
+  <!-- Boucle gauche -->
+  <path d="M 32 22 C 27 13 17 14 20 20 C 22 23 29 22 32 22 Z" fill="url(#goldGrad)"/>
+  <!-- Boucle droite -->
+  <path d="M 32 22 C 37 13 47 14 44 20 C 42 23 35 22 32 22 Z" fill="url(#goldGrad)"/>
+  
+  <!-- Cœur du nœud -->
+  <circle cx="32" cy="22" r="3.5" fill="#FFE082"/>
+
+  <!-- Étoile scintillante en haut à droite -->
+  <path d="M 50 10 L 51.5 13.5 L 55 15 L 51.5 16.5 L 50 20 L 48.5 16.5 L 45 15 L 48.5 13.5 Z" fill="url(#goldGrad)"/>
+</svg>
