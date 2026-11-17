@@ -209,6 +209,14 @@ export default function CheckoutPage() {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href={`/track?ref=${encodeURIComponent(completedOrder.orderReference)}`}
+            className="px-7 py-4 rounded-xl font-bold text-white bg-[#14532D] hover:bg-[#0F3E22] shadow-xl flex items-center justify-center gap-2 text-sm transition-all"
+          >
+            <Truck className="w-5 h-5 text-[#F4C542]" />
+            <span>Suivre ma commande en direct</span>
+          </Link>
+
           <a
             href={whatsappLink}
             target="_blank"

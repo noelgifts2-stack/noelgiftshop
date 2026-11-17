@@ -140,6 +140,8 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
           <p>© 2026 NOËL GIFT SHOP. {t.common.allRightsReserved}</p>
           <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/track" className="hover:text-white transition-colors text-emerald-300 font-semibold">Suivi de Commande</Link>
+            <span>•</span>
             <Link href="/legal/returns" className="hover:text-white transition-colors">Retours & Remboursements</Link>
             <span>•</span>
             <Link href="/legal/shipping" className="hover:text-white transition-colors">Livraison & Délais</Link>
@@ -148,7 +150,9 @@ export default function Footer() {
             <span>•</span>
             <Link href="/legal/privacy" className="hover:text-white transition-colors">Confidentialité</Link>
             <span>•</span>
-            <Link href="/legal/mentions-legales" className="hover:text-white transition-colors">Mentions Légales & Impressum</Link>
+            <Link href="/legal/mentions-legales" className="hover:text-white transition-colors">Mentions Légales</Link>
+            <span>•</span>
+            <Link href="/admin" className="hover:text-amber-300 transition-colors opacity-60 hover:opacity-100">Administration</Link>
           </div>
         </div>
 

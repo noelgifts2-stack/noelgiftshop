@@ -19,7 +19,8 @@ import {
   Phone,
   Snowflake,
   Home,
-  Zap
+  Zap,
+  Truck
 } from 'lucide-react';
 
 export default function Header() {
@@ -234,6 +235,10 @@ export default function Header() {
                 <span>{t.common.promotions}</span>
                 <span className="px-1.5 py-0.5 rounded-full bg-[#C62828] text-white text-[10px] font-bold animate-pulse">PROMO</span>
               </Link>
+              <Link href="/track" className="hover:text-[#C62828] transition-colors flex items-center gap-1.5 whitespace-nowrap text-emerald-800 font-semibold">
+                <Truck className="w-4 h-4 text-emerald-700" />
+                <span>Suivi Colis</span>
+              </Link>
               <Link href="/contact" className="hover:text-[#C62828] transition-colors whitespace-nowrap">
                 {t.common.contact}
               </Link>
@@ -367,6 +372,13 @@ export default function Header() {
                 className="block p-2 rounded-xl hover:bg-red-50 text-[#C62828]"
               >
                 <Zap className="w-4 h-4 mr-1.5 inline-block align-text-bottom" /> {t.common.promotions}
+              </Link>
+              <Link 
+                href="/track" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="block p-2 rounded-xl hover:bg-emerald-50 text-emerald-800 font-semibold"
+              >
+                <Truck className="w-4 h-4 mr-1.5 inline-block align-text-bottom text-emerald-700" /> Suivi de Commande
               </Link>
               <Link 
                 href="/contact" 

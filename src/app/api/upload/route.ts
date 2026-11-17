@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
+import fs from 'fs';
+import path from 'path';
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,10 +17,12 @@ export async function POST(request: NextRequest) {
 
     // Nom de fichier unique sécurisé
     const fileExt = file.name.split('.').pop() || 'jpg';
-    const fileName = `proof_${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const cleanBaseName = file.name.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30);
+    const fileName = `upload_${Date.now()}_${cleanBaseName}.${fileExt}`;
 
     let publicUrl = '';
 
+    // Tentative Supabase Storage
     try {
       const supabase = createServerClient();
       const { data, error } = await supabase.storage
@@ -35,12 +39,27 @@ export async function POST(request: NextRequest) {
         publicUrl = urlData.publicUrl;
       }
     } catch (e) {
-      console.warn('Supabase storage fallback: using local mock URL');
+      // Supabase non lié ou bucket non accessible
     }
 
-    if (!publicUrl) {
-      // Fallback si Supabase n'est pas encore lié
-      publicUrl = `/uploads/${fileName}`;
+    // Sauvegarde physique dans public/uploads pour affichage et prévisualisation immédiats
+    try {
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      const diskPath = path.join(uploadDir, fileName);
+      fs.writeFileSync(diskPath, buffer);
+      
+      if (!publicUrl) {
+        publicUrl = `/uploads/${fileName}`;
+      }
+    } catch (diskErr) {
+      console.warn('Could not write to public/uploads disk:', diskErr);
+      if (!publicUrl) {
+        const base64Data = buffer.toString('base64');
+        publicUrl = `data:${file.type};base64,${base64Data}`;
+      }
     }
 
     return NextResponse.json({
